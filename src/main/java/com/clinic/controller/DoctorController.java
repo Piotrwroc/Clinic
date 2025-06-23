@@ -3,7 +3,8 @@ package com.clinic.controller;
 import com.clinic.model.Doctor;
 import com.clinic.model.Visit;
 import com.clinic.service.DoctorService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/doctors")
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class DoctorController {
 
     private final DoctorService doctorService;

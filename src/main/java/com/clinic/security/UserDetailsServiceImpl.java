@@ -2,7 +2,8 @@ package com.clinic.security;
 
 import com.clinic.model.User;
 import com.clinic.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,8 @@ import java.util.List;
  * do pobierania danych użytkownika na podstawie nazwy użytkownika (tutaj email).
  */
 @Service
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;

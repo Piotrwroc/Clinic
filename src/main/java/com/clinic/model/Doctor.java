@@ -1,10 +1,8 @@
-// src/main/java/com/przychodnia/model/Doctor.java
 package com.clinic.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
+import lombok.NoArgsConstructor;
+import lombok.Data;
 import jakarta.persistence.*;
 import java.util.List;
 

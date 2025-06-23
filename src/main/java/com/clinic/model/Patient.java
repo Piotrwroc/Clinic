@@ -14,9 +14,9 @@ import java.util.List;
  */
 @Entity
 @Table(name = "patient") // Nazwa tabeli w bazie danych
-@Data // Lombok generuje gettery, settery, equals, hashCode, toString
-@NoArgsConstructor // Lombok generuje konstruktor bezargumentowy
-@AllArgsConstructor // Lombok generuje konstruktor z wszystkimi argumentami
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Patient {
 
     /**

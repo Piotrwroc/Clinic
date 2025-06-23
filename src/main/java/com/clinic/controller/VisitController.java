@@ -6,7 +6,8 @@ import com.clinic.model.User;
 import com.clinic.service.PatientService;
 import com.clinic.service.UserService;
 import com.clinic.service.VisitService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,8 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/visits")
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class VisitController {
 
     private final VisitService visitService;

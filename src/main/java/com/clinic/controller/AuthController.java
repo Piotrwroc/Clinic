@@ -5,7 +5,8 @@ import com.clinic.security.AuthRequest;
 import com.clinic.security.AuthResponse;
 import com.clinic.security.JwtTokenProvider;
 import com.clinic.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,8 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
+@Data
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;

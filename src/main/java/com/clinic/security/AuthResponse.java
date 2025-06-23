@@ -1,8 +1,6 @@
 package com.clinic.security;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 /**
  * Klasa do przechowania danych odpowiedzi po udanej autentykacji.

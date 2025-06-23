@@ -1,10 +1,10 @@
 package com.clinic.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
+import lombok.Data;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 /**

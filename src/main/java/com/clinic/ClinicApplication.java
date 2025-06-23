@@ -2,17 +2,13 @@ package com.clinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-// import org.springframework.context.annotation.ComponentScan; // Usunięto redundantny import
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories; // Importuj tę adnotację
 
 /**
- * Główna klasa startowa aplikacji Spring Boot.
- * Adnotacja @SpringBootApplication automatycznie konfiguruje aplikację
- * (np. skanowanie komponentów, autokonfiguracja).
+ * Główna klasa aplikacji Spring Boot dla systemu Przychodni.
  */
 @SpringBootApplication
-// Adnotacja @SpringBootApplication automatycznie wykonuje skanowanie komponentów
-// z pakietu, w którym znajduje się ta klasa (com.przychodnia) i jej podpakietów.
-// Dlatego jawne ComponentScan(basePackages = {"com.przychodnia"}) jest zbędne.
+@EnableJpaRepositories(basePackages = "com.clinic.repository") // Jawne skanowanie repozytoriów JPA
 public class ClinicApplication {
 
     public static void main(String[] args) {

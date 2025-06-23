@@ -1,9 +1,9 @@
+// src/main/java/com/clinic/model/User.java
 package com.clinic.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-
 import jakarta.persistence.*;
 
 /**
@@ -39,6 +39,7 @@ public class User {
     /**
      * Rola użytkownika w systemie (np. ADMIN, LEKARZ, PACJENT, RECEPCJONISTA).
      * Określa uprawnienia dostępu.
+     * UWAGA: Klasa Role jest teraz importowana z zewnętrznego pliku Role.java.
      */
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

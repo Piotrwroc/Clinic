@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // Zmieniono na EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity // Włącza wsparcie dla bezpieczeństwa webowego Spring Security
-@EnableGlobalMethodSecurity(prePostEnabled = true) // Umożliwia użycie adnotacji @PreAuthorize, @PostAuthorize
+@EnableMethodSecurity(prePostEnabled = true) // Umożliwia użycie adnotacji @PreAuthorize, @PostAuthorize
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -49,12 +49,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/doctors/**").hasAnyRole("ADMIN", "LEKARZ", "RECEPCJONISTA")
                         .requestMatchers("/api/visits/**").hasAnyRole("ADMIN", "LEKARZ", "RECEPCJONISTA", "PACJENT") // Pacjent do swoich wizyt
                         .requestMatchers("/api/medical-documents/**").hasAnyRole("ADMIN", "LEKARZ", "RECEPCJONISTA") // Pacjent do swoich dokumentów
+                        // Dodaj /h2-console do publicznych ścieżek, jeśli używasz H2 Console
+                        .requestMatchers("/h2-console/**").permitAll()
                         // Wszystkie inne żądania wymagają uwierzytelnienia
                         .anyRequest().authenticated()
                 );
 
         // Dodanie niestandardowego filtra JWT przed filtrem UsernamePasswordAuthenticationFilter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        // Ważne: dla konsoli H2, która działa w ramkach, potrzebujesz wyłączyć zabezpieczenia ramek
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+
 
         return http.build();
     }
