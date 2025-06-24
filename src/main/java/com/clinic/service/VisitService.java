@@ -31,6 +31,7 @@ public class VisitService {
      * Pobiera wszystkie wizyty z bazy danych.
      * @return Lista wszystkich wizyt.
      */
+    @Transactional // DODANA ADNOTACJA
     public List<Visit> getAllVisits() {
         return visitRepository.findAll();
     }
@@ -40,6 +41,7 @@ public class VisitService {
      * @param id ID wizyty.
      * @return Opcjonalny obiekt Visit, jeśli wizyta została znaleziona.
      */
+    @Transactional // DODANA ADNOTACJA - ponieważ Visit ma leniwe relacje do Doctor i Patient
     public Optional<Visit> getVisitById(Long id) {
         return visitRepository.findById(id);
     }
@@ -180,6 +182,7 @@ public class VisitService {
      * @return Lista wizyt pacjenta.
      * @throws IllegalArgumentException Jeśli pacjent nie istnieje.
      */
+    @Transactional // DODANA ADNOTACJA
     public List<Visit> getPatientVisitHistory(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Pacjent o podanym ID nie istnieje."));
@@ -192,6 +195,7 @@ public class VisitService {
      * @return Lista wizyt lekarza.
      * @throws IllegalArgumentException Jeśli lekarz nie istnieje.
      */
+    @Transactional // DODANA ADNOTACJA
     public List<Visit> getDoctorVisitHistory(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Lekarz o podanym ID nie istnieje."));

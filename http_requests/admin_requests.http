@@ -1,0 +1,209 @@
+### Admin - Rejestracja
+POST http://localhost:8080/api/auth/register/admin
+Content-Type: application/json
+Authorization: Bearer <TOKEN_ADMINA>
+
+{
+  "email": "admin.systemu@example.com",
+  "password": "bardzobezpiecznehaslo"
+}
+
+### Admin - Logowanie (aby uzyskać token ADMINA)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin.systemu@example.com",
+  "password": "bardzobezpiecznehaslo"
+}
+
+### Admin - Rejestracja nowego Lekarza (jeśli @PreAuthorize jest aktywne w AuthController)
+POST http://localhost:8080/api/auth/register/doctor
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "email": "dr.anna@example.com",
+  "password": "lekarzpassword"
+}
+
+### Admin - Rejestracja nowego Administratora (jeśli @PreAuthorize jest aktywne w AuthController)
+POST http://localhost:8080/api/auth/register/admin
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "email": "admin.nowy@example.com",
+  "password": "nowyadminpassword"
+}
+
+### Admin - Rejestracja nowego Recepcjonisty (jeśli @PreAuthorize jest aktywne w AuthController)
+POST http://localhost:8080/api/auth/register/receptionist
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "email": "recepcja.nowa@example.com",
+  "password": "recepcjonistapassword"
+}
+
+### Admin - Pobierz wszystkich pacjentów
+GET http://localhost:8080/api/patients
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbi5zeXN0ZW11QGV4YW1wbGUuY29tIiwiaWF0IjoxNzUwNzI0OTE3LCJleHAiOjE3NTA3Mjg1MTd9.igo5HoocDobgkE__htxLwplqYwPcUhmHsEk3ZQcdRQw4-nQj9YFoNsh7fhqlvEBGUsn4ap4bOqF0-y-vLLWXag
+
+### Admin - Pobierz pacjenta po ID
+GET http://localhost:8080/api/patients/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Utwórz nowego pacjenta
+POST http://localhost:8080/api/patients
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "imie": "Jan",
+  "nazwisko": "Nowak",
+  "dataUrodzenia": "1990-05-15",
+  "email": "jan.nowak@example.com",
+  "telefon": "123456789",
+  "pesel": "90051512345",
+  "adres": "ul. Kwiatowa 5, Wrocław"
+}
+
+### Admin - Zaktualizuj pacjenta po ID
+PUT http://localhost:8080/api/patients/<ID_PACJENTA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "imie": "Jan",
+  "nazwisko": "Nowak-Zaktualizowany",
+  "dataUrodzenia": "1990-05-15",
+  "email": "jan.nowak@example.com",
+  "telefon": "999888777",
+  "pesel": "90051512345",
+  "adres": "ul. Kwiatowa 5A, Wrocław"
+}
+
+### Admin - Usuń pacjenta po ID
+DELETE http://localhost:8080/api/patients/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz wszystkich lekarzy
+GET http://localhost:8080/api/doctors
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz lekarza po ID
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Utwórz nowego lekarza
+POST http://localhost:8080/api/doctors
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "imie": "Marta",
+  "nazwisko": "Kowalska",
+  "specjalizacja": "Dermatolog",
+  "email": "dr.martak@example.com",
+  "telefon": "555444333"
+}
+
+### Admin - Zaktualizuj lekarza po ID
+PUT http://localhost:8080/api/doctors/<ID_LEKARZA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "imie": "Marta",
+  "nazwisko": "Kowalska-Zaktualizowana",
+  "specjalizacja": "Dermatolog",
+  "email": "dr.martak@example.com",
+  "telefon": "555444333"
+}
+
+### Admin - Usuń lekarza po ID
+DELETE http://localhost:8080/api/doctors/<ID_LEKARZA>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz dostępne terminy dla lekarza
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>/available-terms
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz wszystkie wizyty
+GET http://localhost:8080/api/visits
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz wizytę po ID
+GET http://localhost:8080/api/visits/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Zaplanuj nową wizytę
+POST http://localhost:8080/api/visits/schedule?patientId=<ID_PACJENTA>&doctorId=<ID_LEKARZA>&visitDateTime=2025-07-01T10:00:00
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+Content-Type: application/x-www-form-urlencoded
+
+### Admin - Zaktualizuj wizytę po ID
+PUT http://localhost:8080/api/visits/<ID_WIZYTY>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+{
+  "visitDateTime": "2025-07-01T11:00:00",
+  "status": "SCHEDULED",
+  "doctor": { "id": <ID_LEKARZA> },
+  "patient": { "id": <ID_PACJENTA> }
+}
+
+### Admin - Anuluj wizytę po ID
+POST http://localhost:8080/api/visits/<ID_WIZYTY>/cancel
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Oznacz wizytę jako ukończoną po ID
+POST http://localhost:8080/api/visits/<ID_WIZYTY>/complete
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Usuń wizytę po ID
+DELETE http://localhost:8080/api/visits/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz historię wizyt pacjenta po ID pacjenta
+GET http://localhost:8080/api/visits/patient/<ID_PACJENTA>/history
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz historię wizyt lekarza po ID lekarza
+GET http://localhost:8080/api/visits/doctor/<ID_LEKARZA>/history
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz wszystkie dokumenty medyczne
+GET http://localhost:8080/api/medical-documents
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz dokument medyczny po ID
+GET http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Utwórz nowy dokument medyczny
+POST http://localhost:8080/api/medical-documents?patientId=<ID_PACJENTA>&name=Wyniki%20MR&content=Wyniki%20badania%20rezonansu%20magnetycznego%20sa%20w%20normie.
+Authorization: Bearer java.net.URISyntaxException: Illegal character in path at index 34: http://localhost:8080/api/doctors/<ID_LEKARZA>
+Content-Type: application/x-www-form-urlencoded
+
+### Admin - Zaktualizuj treść dokumentu medycznego
+PUT http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>/content
+Content-Type: text/plain
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+Zaktualizowana treść dokumentu: Pacjent czuje się lepiej.
+
+### Admin - Usuń dokument medyczny po ID
+DELETE http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz dokumenty medyczne dla pacjenta po ID pacjenta
+GET http://localhost:8080/api/medical-documents/patient/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>
+
+### Admin - Pobierz dokumenty medyczne dla wizyty po ID wizyty
+GET http://localhost:8080/api/medical-documents/visit/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_ADMINA>

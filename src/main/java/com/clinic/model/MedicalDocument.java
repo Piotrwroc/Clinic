@@ -1,5 +1,6 @@
 package com.clinic.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import jakarta.persistence.*;
@@ -45,18 +46,24 @@ public class MedicalDocument {
     private LocalDateTime creationDate;
 
     /**
-     * Pacjent, do którego należy dokument.
-     * Relacja Many-to-One: wiele dokumentów może być dla jednego pacjenta.
+     * Relacja Many-to-One z Pacjentem.
+     * @JsonBackReference oznacza, że to jest strona "odwrotna" relacji.
+     * Nie będzie renderowana podczas serializacji Dokumentu Medycznego, aby uniknąć cyklicznej pętli z Pacjentem.
+     * Nazwa "patient-medicalDocuments" łączy ją z @JsonManagedReference w Patient.
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonBackReference("patient-medicalDocuments")
     private Patient patient;
 
     /**
-     * Wizyta, z którą dokument jest powiązany (opcjonalnie).
-     * Relacja Many-to-One: wiele dokumentów może być powiązanych z jedną wizytą.
+     * Relacja Many-to-One z Wizytą (opcjonalna).
+     * @JsonBackReference oznacza, że to jest strona "odwrotna" relacji.
+     * Nie będzie renderowana podczas serializacji Dokumentu Medycznego, aby uniknąć cyklicznej pętli z Wizytą.
+     * Nazwa "visit-medicalDocuments" łączy ją z @JsonManagedReference w Visit.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "visit_id") // visit_id może być NULL
+    @JoinColumn(name = "visit_id")
+    @JsonBackReference("visit-medicalDocuments") //
     private Visit visit;
 }

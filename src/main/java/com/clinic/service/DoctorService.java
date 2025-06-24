@@ -29,6 +29,7 @@ public class DoctorService {
      * Pobiera wszystkich lekarzy z bazy danych.
      * @return Lista wszystkich lekarzy.
      */
+    @Transactional // DODANA ADNOTACJA
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
@@ -38,6 +39,7 @@ public class DoctorService {
      * @param id ID lekarza.
      * @return Opcjonalny obiekt Doctor, jeśli lekarz został znaleziony.
      */
+    @Transactional // DODANA ADNOTACJA - ponieważ Doctor ma leniwe relacje
     public Optional<Doctor> getDoctorById(Long id) {
         return doctorRepository.findById(id);
     }
@@ -92,24 +94,15 @@ public class DoctorService {
 
     /**
      * Pobiera dostępne terminy dla danego lekarza w określonym przedziale czasowym.
-     * W tym przykładzie, po prostu zwraca wszystkie przyszłe wizyty, które NIE są anulowane.
-     * W bardziej zaawansowanym systemie, należałoby uwzględnić grafik pracy lekarza
-     * i generować wolne sloty na podstawie jego dostępności.
-     *
      * @param doctorId ID lekarza.
      * @param from Czas początkowy, od którego szukamy terminów.
      * @return Lista wizyt lekarza, które nie są anulowane i są po danym czasie.
      */
+    @Transactional // DODANA ADNOTACJA - ponieważ pobiera Visit, które mają leniwe relacje
     public List<Visit> getAvailableTerms(Long doctorId, LocalDateTime from) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Lekarz o podanym ID nie istnieje."));
 
-        // Pobieramy wszystkie przyszłe wizyty, które nie są anulowane
-        // (tj. są zaplanowane lub już się odbyły, ale chcemy pokazać tylko przyszłe)
-        // W prawdziwym systemie, musiałbyś mieć zdefiniowane "sloty" w grafiku lekarza
-        // i sprawdzać, które sloty są wolne (nie mają przypisanej wizyty lub wizyta jest anulowana).
-        // Dla uproszczenia, zakładamy, że "dostępne terminy" to po prostu przyszłe wizyty
-        // które nie są w statusie "CANCELLED".
         return visitRepository.findByDoctorAndStatusNotAndVisitDateTimeAfter(doctor, VisitStatus.CANCELLED, from)
                 .stream()
                 .filter(visit -> visit.getStatus().equals(VisitStatus.SCHEDULED)) // Tylko zaplanowane
@@ -121,6 +114,7 @@ public class DoctorService {
      * @param email Adres e-mail lekarza.
      * @return Opcjonalny obiekt Doctor.
      */
+    @Transactional // DODANA ADNOTACJA - jeśli Doctor ma leniwe relacje i jest serializowany po pobraniu
     public Optional<Doctor> getDoctorByEmail(String email) {
         return doctorRepository.findByEmail(email);
     }

@@ -1,0 +1,118 @@
+### Lekarz - Rejestracja
+POST http://localhost:8080/api/auth/register/doctor
+Content-Type: application/json
+Authorization: Bearer <TOKEN_ADMINA>
+
+{
+  "email": "dr.nowak@example.com",
+  "password": "lekarzpassword"
+}
+
+### Lekarz - Logowanie (aby uzyskać token LEKARZA)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dr.anna@example.com",
+  "password": "lekarzpassword"
+}
+
+### Lekarz - Pobierz wszystkich pacjentów
+GET http://localhost:8080/api/patients
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz pacjenta po ID
+GET http://localhost:8080/api/patients/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Zaktualizuj pacjenta po ID (rola lekarza pozwala na aktualizację danych pacjentów)
+PUT http://localhost:8080/api/patients/<ID_PACJENTA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+{
+  "imie": "Jan",
+  "nazwisko": "Nowak-Zaktualizowany-Lekarz",
+  "dataUrodzenia": "1990-05-15",
+  "email": "jan.nowak@example.com",
+  "telefon": "123123123",
+  "pesel": "90051512345",
+  "adres": "ul. Testowa 10, Gdańsk"
+}
+
+### Lekarz - Pobierz wszystkich lekarzy
+GET http://localhost:8080/api/doctors
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz lekarza po ID
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz dostępne terminy dla lekarza
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>/available-terms
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz wszystkie wizyty
+GET http://localhost:8080/api/visits
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz wizytę po ID (dowolną)
+GET http://localhost:8080/api/visits/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Zaplanuj nową wizytę (lekarz może planować dla pacjenta)
+POST http://localhost:8080/api/visits/schedule?patientId=<ID_PACJENTA>&doctorId=<ID_LEKARZA>&visitDateTime=2025-07-02T09:00:00
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+Content-Type: application/x-www-form-urlencoded
+
+### Lekarz - Zaktualizuj wizytę po ID (lekarz może aktualizować swoje wizyty)
+PUT http://localhost:8080/api/visits/<ID_WIZYTY_LEKARZA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+{
+  "visitDateTime": "2025-07-02T10:30:00",
+  "status": "SCHEDULED",
+  "doctor": { "id": <ID_LEKARZA> },
+  "patient": { "id": <ID_PACJENTA> }
+}
+
+### Lekarz - Anuluj wizytę po ID (lekarz może anulować swoje wizyty)
+POST http://localhost:8080/api/visits/<ID_WIZYTY_LEKARZA>/cancel
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Oznacz wizytę jako ukończoną po ID (lekarz może oznaczyć swoje wizyty)
+POST http://localhost:8080/api/visits/<ID_WIZYTY_LEKARZA>/complete
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz historię wizyt pacjenta po ID pacjenta
+GET http://localhost:8080/api/visits/patient/<ID_PACJENTA>/history
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz historię wizyt lekarza po ID lekarza (własną)
+GET http://localhost:8080/api/visits/doctor/<ID_LEKARZA_WLASNEGO>/history
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz dokument medyczny po ID (dowolny)
+GET http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Utwórz nowy dokument medyczny
+POST http://localhost:8080/api/medical-documents?patientId=<ID_PACJENTA>&name=Diagnoza&content=Pacjent%20cierpi%20na%20przeziebienie.
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+Content-Type: application/x-www-form-urlencoded
+
+### Lekarz - Zaktualizuj treść dokumentu medycznego
+PUT http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>/content
+Content-Type: text/plain
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+Zaktualizowana diagnoza: Pacjent zdrowy.
+
+### Lekarz - Pobierz dokumenty medyczne dla pacjenta po ID pacjenta
+GET http://localhost:8080/api/medical-documents/patient/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>
+
+### Lekarz - Pobierz dokumenty medyczne dla wizyty po ID wizyty
+GET http://localhost:8080/api/medical-documents/visit/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_LEKARZA>

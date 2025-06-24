@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference; // Dodaj ten import
 
 /**
  * Encja reprezentująca lekarza w systemie przychodni.
@@ -58,7 +59,11 @@ public class Doctor {
      * Lista wizyt przypisanych do tego lekarza.
      * Relacja One-to-Many: jeden lekarz może mieć wiele wizyt.
      * mappedBy wskazuje pole w encji Wizyta, które mapuje tę relację.
+     *
+     * @JsonManagedReference oznacza, że to jest strona "zarządzająca" serializacją,
+     * i będzie renderować listę wizyt. Nazwa "doctor-visits" łączy ją z @JsonBackReference w Visit.
      */
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("doctor-visits")
     private List<Visit> visits;
 }

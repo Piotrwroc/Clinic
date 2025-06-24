@@ -1,5 +1,6 @@
 package com.clinic.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -67,24 +68,20 @@ public class Patient {
     private String adres;
 
     /**
-     * Lista wizyt przypisanych do tego pacjenta.
-     * Relacja One-to-Many: jeden pacjent może mieć wiele wizyt.
-     * mappedBy wskazuje pole w encji Wizyta, które mapuje tę relację.
-     * CascadeType.ALL oznacza, że operacje (np. usunięcie) na pacjencie kaskadowo wpłyną na wizyty.
-     * orphanRemoval = true zapewnia usunięcie wizyt, które nie są już powiązane z żadnym pacjentem.
+     * Relacja One-to-Many z Wizytami.
+     * @JsonManagedReference oznacza, że to jest strona "zarządzająca" serializacją,
+     * i będzie renderować listę wizyt. Nazwa "patient-visits" łączy ją z @JsonBackReference w Visit.
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("patient-visits")
     private List<Visit> visits;
 
     /**
-     * Lista dokumentów medycznych przypisanych do tego pacjenta.
-     * Relacja One-to-Many: jeden pacjent może mieć wiele dokumentów medycznych.
-     * mappedBy wskazuje pole w encji MedicalDocument, które mapuje tę relację.
-     * CascadeType.ALL i orphanRemoval = true działają podobnie jak dla wizyt.
+     * Relacja One-to-Many z Dokumentami Medycznymi.
+     * @JsonManagedReference oznacza, że to jest strona "zarządzająca" serializacją,
+     * i będzie renderować listę dokumentów. Nazwa "patient-medicalDocuments" łączy ją z @JsonBackReference w MedicalDocument.
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("patient-medicalDocuments")
     private List<MedicalDocument> medicalDocuments;
-
-    // Bez getterów, setterów, equals, hashCode, toString - generuje LOMBOK (@Data)
-    // Konstruktor bezargumentowy i z wszystkimi argumentami generuje LOMBOK (@NoArgsConstructor, @AllArgsConstructor)
 }

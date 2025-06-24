@@ -1,0 +1,133 @@
+### Recepcjonista - Rejestracja
+POST http://localhost:8080/api/auth/register/receptionist
+Content-Type: application/json
+Authorization: Bearer <TOKEN_ADMINA>
+
+{
+  "email": "recepcjonista.kasia@example.com",
+  "password": "recepcja123"
+}
+
+### Recepcjonista - Logowanie (aby uzyskać token RECEPCJONISTY)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "recepcja.nowa@example.com",
+  "password": "recepcjonistapassword"
+}
+
+### Recepcjonista - Pobierz wszystkich pacjentów
+GET http://localhost:8080/api/patients
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz pacjenta po ID
+GET http://localhost:8080/api/patients/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Utwórz nowego pacjenta
+POST http://localhost:8080/api/patients
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+{
+  "imie": "Krzysztof",
+  "nazwisko": "Kowal",
+  "dataUrodzenia": "1985-11-20",
+  "email": "krzysztof.kowal@example.com",
+  "telefon": "777666555",
+  "pesel": "85112098765",
+  "adres": "ul. Leśna 12, Gdynia"
+}
+
+### Recepcjonista - Zaktualizuj pacjenta po ID
+PUT http://localhost:8080/api/patients/<ID_PACJENTA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+{
+  "imie": "Krzysztof",
+  "nazwisko": "Kowal-Zaktualizowany",
+  "dataUrodzenia": "1985-11-20",
+  "email": "krzysztof.kowal@example.com",
+  "telefon": "777666555",
+  "pesel": "85112098765",
+  "adres": "ul. Leśna 12, Gdynia"
+}
+
+### Recepcjonista - Pobierz wszystkich lekarzy
+GET http://localhost:8080/api/doctors
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz lekarza po ID
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz dostępne terminy dla lekarza
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>/available-terms
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz wszystkie wizyty
+GET http://localhost:8080/api/visits
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz wizytę po ID (dowolną)
+GET http://localhost:8080/api/visits/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Zaplanuj nową wizytę
+POST http://localhost:8080/api/visits/schedule?patientId=<ID_PACJENTA>&doctorId=<ID_LEKARZA>&visitDateTime=2025-07-03T10:00:00
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+Content-Type: application/x-www-form-urlencoded
+
+### Recepcjonista - Zaktualizuj wizytę po ID
+PUT http://localhost:8080/api/visits/<ID_WIZYTY>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+{
+  "visitDateTime": "2025-07-03T11:00:00",
+  "status": "SCHEDULED",
+  "doctor": { "id": <ID_LEKARZA> },
+  "patient": { "id": <ID_PACJENTA> }
+}
+
+### Recepcjonista - Anuluj wizytę po ID
+POST http://localhost:8080/api/visits/<ID_WIZYTY>/cancel
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Oznacz wizytę jako ukończoną po ID
+POST http://localhost:8080/api/visits/<ID_WIZYTY>/complete
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz historię wizyt pacjenta po ID pacjenta
+GET http://localhost:8080/api/visits/patient/<ID_PACJENTA>/history
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz historię wizyt lekarza po ID lekarza
+GET http://localhost:8080/api/visits/doctor/<ID_LEKARZA>/history
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz dokument medyczny po ID
+GET http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Utwórz nowy dokument medyczny
+POST http://localhost:8080/api/medical-documents?patientId=<ID_PACJENTA>&name=Zaświadczenie&content=Zaświadczenie%20o%20stanie%20zdrowia.
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+Content-Type: application/x-www-form-urlencoded
+
+### Recepcjonista - Zaktualizuj treść dokumentu medycznego
+PUT http://localhost:8080/api/medical-documents/<ID_DOKUMENTU>/content
+Content-Type: text/plain
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+Zaktualizowana treść dokumentu: Pacjent został poinformowany o dalszych krokach.
+
+### Recepcjonista - Pobierz dokumenty medyczne dla pacjenta po ID pacjenta
+GET http://localhost:8080/api/medical-documents/patient/<ID_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>
+
+### Recepcjonista - Pobierz dokumenty medyczne dla wizyty po ID wizyty
+GET http://localhost:8080/api/medical-documents/visit/<ID_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_RECEPCJONISTY>

@@ -11,8 +11,8 @@
     <groupId>org.example</groupId>
     <artifactId>clinic</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>przychodnia</name>
-    <description>przychodnia</description>
+    <name>clinic</name>
+    <description>clinic</description>
     <url/>
     <licenses>
         <license/>

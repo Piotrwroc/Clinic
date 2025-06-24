@@ -1,102 +1,57 @@
-// src/main/java/com/przychodnia/security/JwtTokenProvider.java
 package com.clinic.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException; // Ważne: ten import jest poprawny
+import io.jsonwebtoken.UnsupportedJwtException; // Ważne: ten import jest poprawny
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService; // Dodano import
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
 
-import static io.jsonwebtoken.Jwts.*;
-
-/**
- * Klasa odpowiedzialna za generowanie, walidację i parsowanie tokenów JWT.
- */
 @Component
 public class JwtTokenProvider {
 
-    // Wartość klucza tajnego pobierana z application.properties
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
-    // Czas ważności tokena (w milisekundach)
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
     private Key key;
 
-    /**
-     * Metoda inicjalizująca klucz po wstrzyknięciu wartości jwtSecret.
-     * Klucz musi być wystarczająco długi (min. 256 bitów)
-     */
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    /**
-     * Generuje token JWT dla danego uwierzytelnienia.
-     * @param authentication Obiekt Authentication zawierający dane użytkownika i jego role.
-     * @return Wygenerowany token JWT.
-     */
     public String generateToken(Authentication authentication) {
-        String email = authentication.getName(); // Email użytkownika
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-        // Mapowanie ról na Stringi oddzielone przecinkami
-        String roles = authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
+        String email = authentication.getName();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-        return builder()
-                .setSubject(email) // Podmiotem jest email użytkownika
-                .claim("roles", roles) // Dodanie ról jako custom claim
-                .setIssuedAt(new Date()) // Data wystawienia
-                .setExpiration(expiryDate) // Data wygaśnięcia
-                .signWith(key, SignatureAlgorithm.HS512) // Podpisanie kluczem HMAC SHA-512
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    /**
-     * Pobiera dane uwierzytelnienia z tokena JWT.
-     * @param token Token JWT.
-     * @param userDetailsService Serwis do ładowania danych użytkownika.
-     * @return Obiekt Authentication.
-     */
-    public Authentication getAuthentication(String token, UserDetailsService userDetailsService) {
+    public String getUserEmailFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        String email = claims.getSubject();
-        String roles = claims.get("roles", String.class);
-
-        // Tworzenie listy GrantedAuthority z ról
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(roles.split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return claims.getSubject();
     }
 
     /**
@@ -108,31 +63,17 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException ex) {
-            // Logowanie błędu: Invalid JWT signature
-            System.err.println("Invalid JWT signature");
+        } catch (SignatureException ex) { // Pierwsze złapanie io.jsonwebtoken.security.SignatureException
+            System.err.println("Invalid JWT signature: " + ex.getMessage());
         } catch (MalformedJwtException ex) {
-            // Logowanie błędu: Invalid JWT token
-            System.err.println("Invalid JWT token");
+            System.err.println("Invalid JWT token: " + ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            // Logowanie błędu: Expired JWT token
-            System.err.println("Expired JWT token");
+            System.err.println("Expired JWT token: " + ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            // Logowanie błędu: Unsupported JWT token
-            System.err.println("Unsupported JWT token");
+            System.err.println("Unsupported JWT token: " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            // Logowanie błędu: JWT claims string is empty.
-            System.err.println("JWT claims string is empty.");
+            System.err.println("JWT claims string is empty: " + ex.getMessage());
         }
         return false;
-    }
-
-    /**
-     * Zwraca klucz używany do podpisywania i weryfikacji JWT.
-     * Potrzebne w JwtAuthenticationFilter.
-     * @return Klucz prywatny.
-     */
-    public Key getKey() { // Zmieniono widoczność na publiczną
-        return this.key;
     }
 }

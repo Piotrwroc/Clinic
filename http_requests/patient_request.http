@@ -1,0 +1,73 @@
+### Pacjent - Rejestracja (jeśli jeszcze nie zarejestrowany)
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "pacjent.ewa@example.com",
+  "password": "pacjentpassword"
+}
+
+### Pacjent - Logowanie (aby uzyskać token PACJENTA)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "pacjent.ewa@example.com",
+  "password": "pacjentpassword"
+}
+
+### Pacjent - Pobierz wszystkich lekarzy
+GET http://localhost:8080/api/doctors
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz lekarza po ID
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz dostępne terminy dla lekarza
+GET http://localhost:8080/api/doctors/<ID_LEKARZA>/available-terms
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz pacjenta po ID (WŁASNE DANE)
+GET http://localhost:8080/api/patients/<ID_WLASNEGO_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Zaktualizuj swoje dane pacjenta (WŁASNE DANE)
+PUT http://localhost:8080/api/patients/<ID_WLASNEGO_PACJENTA>
+Content-Type: application/json
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+{
+  "imie": "Ewa",
+  "nazwisko": "Nowak-Pacjent",
+  "dataUrodzenia": "1995-03-20",
+  "email": "pacjent.ewa@example.com",
+  "telefon": "666555444",
+  "pesel": "95032012345",
+  "adres": "ul. Wiosenna 7, Poznań"
+}
+
+### Pacjent - Pobierz wizytę po ID (WŁASNA WIZYTA)
+GET http://localhost:8080/api/visits/<ID_WLASNEJ_WIZYTY>
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Zaplanuj nową wizytę (dla siebie)
+POST http://localhost:8080/api/visits/schedule?patientId=<ID_WLASNEGO_PACJENTA>&doctorId=<ID_LEKARZA>&visitDateTime=2025-07-05T12:00:00
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+Content-Type: application/x-www-form-urlencoded
+
+### Pacjent - Anuluj wizytę po ID (WŁASNA WIZYTA)
+POST http://localhost:8080/api/visits/<ID_WLASNEJ_WIZYTY>/cancel
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz historię wizyt pacjenta po ID pacjenta (WŁASNA HISTORIA)
+GET http://localhost:8080/api/visits/patient/<ID_WLASNEGO_PACJENTA>/history
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz dokument medyczny po ID (WŁASNY DOKUMENT)
+GET http://localhost:8080/api/medical-documents/<ID_WLASNEGO_DOKUMENTU>
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>
+
+### Pacjent - Pobierz dokumenty medyczne dla pacjenta po ID pacjenta (WŁASNE DOKUMENTY)
+GET http://localhost:8080/api/medical-documents/patient/<ID_WLASNEGO_PACJENTA>
+Authorization: Bearer <TWÓJ_TOKEN_PACJENTA>

@@ -5,13 +5,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.util.StringUtils; // Dodaj ten import
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import io.jsonwebtoken.Jwts;
 
 /**
  * Filtr Spring Security, który jest wykonywany raz na każde żądanie HTTP.
@@ -31,17 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            // 1. Spróbuj pobrać token JWT z żądania
             String jwt = getJwtFromRequest(request);
 
-            if (jwt != null && tokenProvider.validateToken(jwt)) {
-                // Pobieranie emaila użytkownika z tokena
-                String userEmail = Jwts.parser()
-                        .setSigningKey(tokenProvider.getKey()) // Dostęp do prywatnego klucza
-                        .build()
-                        .parseClaimsJws(jwt)
-                        .getBody()
-                        .getSubject();
+            // 2. Jeśli token istnieje i jest poprawny
+            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                // 3. Pobierz email użytkownika z tokena (teraz już bezpiecznie, bo token został zweryfikowany)
+                String userEmail = tokenProvider.getUserEmailFromJWT(jwt); // <-- Nowa/zmodyfikowana metoda w JwtTokenProvider
 
+                // 4. Załaduj szczegóły użytkownika i ustaw uwierzytelnienie w kontekście bezpieczeństwa
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
@@ -52,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex) {
             System.err.println("Could not set user authentication in security context: " + ex.getMessage());
         }
-
         filterChain.doFilter(request, response);
     }
 
@@ -63,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7); // Usuń "Bearer "
         }
         return null;

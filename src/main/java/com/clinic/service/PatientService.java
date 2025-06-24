@@ -1,49 +1,35 @@
 package com.clinic.service;
 
 import com.clinic.model.Patient;
+import com.clinic.model.User;
 import com.clinic.repository.PatientRepository;
-import lombok.RequiredArgsConstructor;
+import com.clinic.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.transaction.annotation.Transactional; // Dodaj ten import
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Serwis odpowiedzialny za logikę biznesową związaną z pacjentami.
- * Wykorzystuje PatientRepository do interakcji z bazą danych.
- */
 @Service
-@RequiredArgsConstructor // Lombok generuje konstruktor z wymaganymi zależnościami (final fields)
+@AllArgsConstructor
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository; // Potrzebne do powiązania pacjenta z użytkownikiem
 
-    /**
-     * Pobiera wszystkich pacjentów z bazy danych.
-     * @return Lista wszystkich pacjentów.
-     */
+    @Transactional
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
-    /**
-     * Pobiera pacjenta o podanym ID.
-     * @param id ID pacjenta.
-     * @return Opcjonalny obiekt Patient, jeśli pacjent został znaleziony.
-     */
+    @Transactional
     public Optional<Patient> getPatientById(Long id) {
         return patientRepository.findById(id);
     }
 
-    /**
-     * Tworzy nowego pacjenta.
-     * @param patient Obiekt pacjenta do zapisania.
-     * @return Zapisany obiekt pacjenta.
-     */
     @Transactional
     public Patient createPatient(Patient patient) {
-        // Dodatkowa walidacja, np. czy email/PESEL jest już zajęty
+        // Dodatkowa logika np. sprawdzenie unikalności emaila/PESELu
         if (patientRepository.findByEmail(patient.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Pacjent z podanym adresem email już istnieje.");
         }
@@ -53,56 +39,30 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
-    /**
-     * Aktualizuje dane istniejącego pacjenta.
-     * @param id ID pacjenta do zaktualizowania.
-     * @param patientDetails Obiekt Patient zawierający zaktualizowane dane.
-     * @return Zaktualizowany obiekt pacjenta, lub Optional.empty() jeśli pacjent nie istnieje.
-     */
     @Transactional
     public Optional<Patient> updatePatient(Long id, Patient patientDetails) {
-        return patientRepository.findById(id).map(patient -> {
-            patient.setImie(patientDetails.getImie());
-            patient.setNazwisko(patientDetails.getNazwisko());
-            patient.setDataUrodzenia(patientDetails.getDataUrodzenia());
-            patient.setTelefon(patientDetails.getTelefon());
-            patient.setAdres(patientDetails.getAdres());
-            // E-mail i PESEL powinny być zmieniane ostrożnie, aby nie naruszać unikalności.
-            // W bardziej rozbudowanej aplikacji należałoby to obsłużyć z większą precyzją.
-            if (!patient.getEmail().equals(patientDetails.getEmail())) {
-                if (patientRepository.findByEmail(patientDetails.getEmail()).isPresent()) {
-                    throw new IllegalArgumentException("Nowy adres email jest już zajęty.");
-                }
-                patient.setEmail(patientDetails.getEmail());
-            }
-            if (patientDetails.getPesel() != null && !patient.getPesel().equals(patientDetails.getPesel())) {
-                if (patientRepository.findByPesel(patientDetails.getPesel()).isPresent()) {
-                    throw new IllegalArgumentException("Nowy numer PESEL jest już zajęty.");
-                }
-                patient.setPesel(patientDetails.getPesel());
-            }
-
-            return patientRepository.save(patient);
-        });
+        return patientRepository.findById(id)
+                .map(patient -> {
+                    patient.setImie(patientDetails.getImie());
+                    patient.setNazwisko(patientDetails.getNazwisko());
+                    patient.setDataUrodzenia(patientDetails.getDataUrodzenia());
+                    patient.setEmail(patientDetails.getEmail());
+                    patient.setTelefon(patientDetails.getTelefon());
+                    patient.setPesel(patientDetails.getPesel());
+                    patient.setAdres(patientDetails.getAdres());
+                    return patientRepository.save(patient);
+                });
     }
 
-    /**
-     * Usuwa pacjenta o podanym ID.
-     * @param id ID pacjenta do usunięcia.
-     */
     @Transactional
     public void deletePatient(Long id) {
         if (!patientRepository.existsById(id)) {
-            throw new IllegalArgumentException("Pacjent o podanym ID nie istnieje.");
+            throw new IllegalArgumentException("Pacjent o podanym ID nie istnieje: " + id);
         }
         patientRepository.deleteById(id);
     }
 
-    /**
-     * Znajduje pacjenta po adresie e-mail.
-     * @param email Adres e-mail pacjenta.
-     * @return Opcjonalny obiekt Patient.
-     */
+    @Transactional
     public Optional<Patient> getPatientByEmail(String email) {
         return patientRepository.findByEmail(email);
     }
