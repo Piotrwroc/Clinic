@@ -30,7 +30,7 @@ public class MedicalDocumentService {
      * Pobiera wszystkie dokumenty medyczne z bazy danych.
      * @return Lista wszystkich dokumentów medycznych.
      */
-    @Transactional // DODANA ADNOTACJA
+    @Transactional
     public List<MedicalDocument> getAllMedicalDocuments() {
         return medicalDocumentRepository.findAll();
     }
@@ -40,7 +40,7 @@ public class MedicalDocumentService {
      * @param id ID dokumentu medycznego.
      * @return Opcjonalny obiekt MedicalDocument, jeśli dokument został znaleziony.
      */
-    @Transactional // DODANA ADNOTACJA - ponieważ MedicalDocument ma leniwe relacje do Patient i Visit
+    @Transactional
     public Optional<MedicalDocument> getMedicalDocumentById(Long id) {
         return medicalDocumentRepository.findById(id);
     }
@@ -111,7 +111,7 @@ public class MedicalDocumentService {
      * @return Lista dokumentów medycznych pacjenta.
      * @throws IllegalArgumentException Jeśli pacjent nie istnieje.
      */
-    @Transactional // DODANA ADNOTACJA
+    @Transactional
     public List<MedicalDocument> getMedicalDocumentsForPatient(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Pacjent o podanym ID nie istnieje."));
@@ -124,7 +124,7 @@ public class MedicalDocumentService {
      * @return Lista dokumentów medycznych powiązanych z wizytą.
      * @throws IllegalArgumentException Jeśli wizyta nie istnieje.
      */
-    @Transactional // DODANA ADNOTACJA
+    @Transactional
     public List<MedicalDocument> getMedicalDocumentsForVisit(Long visitId) {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Wizyta o podanym ID nie istnieje."));

@@ -29,7 +29,7 @@ public class DoctorService {
      * Pobiera wszystkich lekarzy z bazy danych.
      * @return Lista wszystkich lekarzy.
      */
-    @Transactional // DODANA ADNOTACJA
+    @Transactional
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
@@ -39,7 +39,7 @@ public class DoctorService {
      * @param id ID lekarza.
      * @return Opcjonalny obiekt Doctor, jeśli lekarz został znaleziony.
      */
-    @Transactional // DODANA ADNOTACJA - ponieważ Doctor ma leniwe relacje
+    @Transactional
     public Optional<Doctor> getDoctorById(Long id) {
         return doctorRepository.findById(id);
     }
@@ -98,7 +98,7 @@ public class DoctorService {
      * @param from Czas początkowy, od którego szukamy terminów.
      * @return Lista wizyt lekarza, które nie są anulowane i są po danym czasie.
      */
-    @Transactional // DODANA ADNOTACJA - ponieważ pobiera Visit, które mają leniwe relacje
+    @Transactional
     public List<Visit> getAvailableTerms(Long doctorId, LocalDateTime from) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new IllegalArgumentException("Lekarz o podanym ID nie istnieje."));
@@ -114,7 +114,7 @@ public class DoctorService {
      * @param email Adres e-mail lekarza.
      * @return Opcjonalny obiekt Doctor.
      */
-    @Transactional // DODANA ADNOTACJA - jeśli Doctor ma leniwe relacje i jest serializowany po pobraniu
+    @Transactional
     public Optional<Doctor> getDoctorByEmail(String email) {
         return doctorRepository.findByEmail(email);
     }

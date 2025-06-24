@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonBackReference; // Dodaj ten import
-import com.fasterxml.jackson.annotation.JsonManagedReference; // Dodaj ten import
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * Encja reprezentująca wizytę pacjenta u lekarza.
